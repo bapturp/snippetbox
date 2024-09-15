@@ -19,8 +19,9 @@ type application struct {
 }
 
 func main() {
-	// Command line arguments
+	// Using `localhost:8080` instead of just `:8080` prevents MacOS to prompt each time the app starts to allow the connection.
 	addr := flag.String("addr", "localhost:8080", "HTTP network address")
+	// Yes the password is in cleartext, please don't do that on production environment.
 	dsn := flag.String("dsn", "web:hello world@/snippetbox?parseTime=true", "MySQL data source name")
 	flag.Parse()
 
