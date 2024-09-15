@@ -2,9 +2,9 @@
 
 Web application written in go, from the fantastic book [Let's Go, by Alex Edwards](https://lets-go.alexedwards.net/).
 
-## Dev
+## Development
 
-This project use [air](https://github.com/air-verse/air) to live reload the app:
+I setup [air](https://github.com/air-verse/air) to live reload the app:
 
 Install air:
 ```sh
@@ -18,7 +18,7 @@ On zsh, edit `~/.zshrc`
 export PATH=$HOME/go/bin:$PATH
 ```
 
-Now you can simply run `air` to start the app:
+Run `air` to start the app:
 ```sh
 air
 ```
