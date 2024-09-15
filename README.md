@@ -19,4 +19,4 @@ Run `air` to start the app:
 ```sh
 air
 ```
-<span style="background-color=rgba(245, 215, 39, 0.28)">💡 The app itself runs on port 8080, but `air` proxy it to [http://localhost:8008](http://localhost:8008) allowing to reload the browser after a new build.</span>
+💡 The app itself runs on port 8080, but `air` proxy it to [http://localhost:8008](http://localhost:8008) allowing to reload the browser after a new build.
