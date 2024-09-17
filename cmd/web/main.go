@@ -11,7 +11,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// application struct to hold the application wide dependencies of the web application.
+// Application struct to hold the application wide dependencies of the web application.
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
@@ -19,9 +19,11 @@ type application struct {
 }
 
 func main() {
-	// Using `localhost:8080` instead of just `:8080` prevents MacOS to prompt each time the app starts to allow the connection.
+	// Using `localhost:8080` instead of just `:8080` to prevents MacOS to prompt
+	// each time the app starts to allow the connection.
 	addr := flag.String("addr", "localhost:8080", "HTTP network address")
-	// Yes the password is in cleartext, please don't do that on production environment.
+	// Data Source Name is the configuration parameters for communicating with the database
+	// Cleartext password, please don't do this on production environment.
 	dsn := flag.String("dsn", "web:hello world@/snippetbox?parseTime=true", "MySQL data source name")
 	flag.Parse()
 
@@ -50,10 +52,7 @@ func main() {
 		snippets: &models.SnippetModel{DB: db},
 	}
 
-	// Initialize a new http.Server struct. Set the Addr and Handler fields so
-	// that the server uses the same network address and routes as before, and set
-	// the ErrorLog field so that the server now uses the custom errorLog logger in
-	// the event of any problems.
+	// Create the web server
 	server := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errorLog,

@@ -7,12 +7,16 @@ import (
 	"text/template"
 )
 
+/*
+Handlers, responsible for executing the application logic and writing HTTP
+response headers and bodies.
+*/
+
 // The home handler is defined as a method against *application
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		app.notFound(w)
-		return
-	}
+	// Demonstrate the use of specific header by adding `Server: Go`` to the
+	// response header
+	w.Header().Add("Server", "Go")
 
 	files := []string{
 		"./ui/html/pages/home.tmpl.html",
@@ -43,7 +47,8 @@ func (app *application) favicon(w http.ResponseWriter, r *http.Request) {
 
 // snippetView handler, method of *application
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	// Use r.PathValue() to go the value of {id} extracted from the request path
+	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil || id < 1 {
 		app.notFound(w)
 		return
@@ -52,26 +57,13 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
 }
 
+func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
+	// Use w.WriteHeader() method to send a 201 Created status code
+	w.WriteHeader(http.StatusCreated)
+
+	w.Write([]byte("Save a new snippet..."))
+}
+
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.Header().Set("Allow", http.MethodPost)
-		app.clientError(w, http.StatusMethodNotAllowed)
-		return
-	}
-
-	// Create some variables to holding dummy data. We'll remove these later
-	// on during the build.
-	title := "O snail"
-	content := "O snail\nCimb Mount Fuji,\nBut slowly!\n\nKobayashi Issa"
-	expires := 7
-
-	// pass the data to the SnipppetModel.Insert() method, receiving the ID of
-	// the new record back.
-	id, err := app.snippets.Insert(title, content, expires)
-	if err != nil {
-		app.serverError(w, err)
-	}
-
-	// Redirect the user to the relevant page for the snippet.
-	http.Redirect(w, r, fmt.Sprintf("/snippet/view?id=%d", id), http.StatusSeeOther)
+	w.Write([]byte("Display a form for creating a new snippet..."))
 }

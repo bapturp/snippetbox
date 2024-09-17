@@ -2,7 +2,7 @@ package main
 
 import "net/http"
 
-// Request multiplexer containing the routes of our web server.
+// Router or servemux in Go terminoligy
 func (app *application) routes() *http.ServeMux {
 	mux := http.NewServeMux()
 
@@ -15,10 +15,12 @@ func (app *application) routes() *http.ServeMux {
 	// server.
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet/view", app.snippetView)
-	mux.HandleFunc("/snippet/create", app.snippetCreate)
-	mux.HandleFunc("/favicon.ico", app.favicon)
+	// `{$}` restricts to the route to match only `/` (a single slash) and nothing after`
+	mux.HandleFunc("GET /{$}", app.home)
+	mux.HandleFunc("GET /snippet/view/{id}", app.snippetView)
+	mux.HandleFunc("GET /snippet/create", app.snippetCreate)
+	mux.HandleFunc("POST /snippet/create", app.snippetCreatePost)
+	mux.HandleFunc("GET /favicon.ico", app.favicon)
 
 	return mux
 }
