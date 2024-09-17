@@ -27,7 +27,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// Read and parse the template
 	tmpl, err := template.ParseFiles(files...)
 	if err != nil {
-		app.errorLog.Println(err.Error())
+		app.logger.Error(err.Error())
 		app.serverError(w, err)
 		return
 	}
@@ -35,7 +35,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// Write the parsed template as response
 	err = tmpl.ExecuteTemplate(w, "base", nil)
 	if err != nil {
-		app.errorLog.Println(err.Error())
+		app.logger.Error(err.Error())
 		app.serverError(w, err)
 	}
 }

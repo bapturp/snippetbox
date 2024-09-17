@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 
@@ -13,8 +13,7 @@ import (
 
 // Application struct to hold the application wide dependencies of the web application.
 type application struct {
-	errorLog *log.Logger
-	infoLog  *log.Logger
+	logger   *slog.Logger
 	snippets *models.SnippetModel
 }
 
@@ -27,41 +26,34 @@ func main() {
 	dsn := flag.String("dsn", "web:hello world@/snippetbox?parseTime=true", "MySQL data source name")
 	flag.Parse()
 
-	// Use log.New() to create a logger for writing information messages. This
-	// takes three parameters: the destination to write the logs to (os.Stdout),
-	// a string prefix for message (INFO followed by a tab), and flags to
-	// indicate what additional information to include (local date and time).
-	// Note that the flags are joined using the bitwise OR operator |.
-	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-
-	// Create a logger for writing error messages in the same way, but use
-	// stderr as the detination and use the log.Lshortfile flag to include
-	// the relevant file name and line number.
-	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+	loggerErr := slog.NewLogLogger(slog.NewTextHandler(os.Stderr, nil), slog.LevelError)
 
 	db, err := openDB(*dsn)
 	if err != nil {
-		errorLog.Fatal(err)
+		logger.Error(err.Error())
 	}
 	defer db.Close()
 
 	// Initialize a new instance of our application struct, containing the dependencies.
 	app := &application{
-		errorLog: errorLog,
-		infoLog:  infoLog,
+		logger:   logger,
 		snippets: &models.SnippetModel{DB: db},
 	}
 
 	// Create the web server
 	server := &http.Server{
 		Addr:     *addr,
-		ErrorLog: errorLog,
+		ErrorLog: loggerErr,
 		Handler:  app.routes(),
 	}
 
-	infoLog.Printf("Starting server on %s", *addr)
+	logger.Info("starting server", "addr", *addr)
 	err = server.ListenAndServe()
-	errorLog.Fatal(err)
+	logger.Error(err.Error())
+	os.Exit(1)
 }
 
 func openDB(dsn string) (*sql.DB, error) {

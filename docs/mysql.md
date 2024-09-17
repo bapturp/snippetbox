@@ -1,4 +1,4 @@
-## MySQL
+# MySQL
 
 ```sh
 # Start MySQL daemon
@@ -15,7 +15,7 @@ brew services stop mysql
 -- use a database
 USE snippetbox;
 
--- show tables
+-- show tables titles
 show tables;
 
 -- select some data
