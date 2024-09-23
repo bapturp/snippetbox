@@ -13,7 +13,7 @@ func (app *application) routes() *http.ServeMux {
 	// Use the  mux.Handler func to register the file server as the handler for
 	// URL paths that start with "/static/" before the request reaches the file
 	// server.
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
 	// `{$}` restricts to the route to match only `/` (a single slash) and nothing after`
 	mux.HandleFunc("GET /{$}", app.home)
