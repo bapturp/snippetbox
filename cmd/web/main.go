@@ -7,12 +7,15 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/bapturp/snippetbox/internal/models"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
 // Application struct to hold the application wide dependencies of the web application.
 type application struct {
-	logger *slog.Logger
+	logger   *slog.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -32,7 +35,8 @@ func main() {
 
 	// Initialize a new instance of our application struct, containing the dependencies.
 	app := &application{
-		logger: logger,
+		logger:   logger,
+		snippets: &models.SnippetModel{DB: db},
 	}
 
 	logger.Info("starting server", "addr", *addr)
